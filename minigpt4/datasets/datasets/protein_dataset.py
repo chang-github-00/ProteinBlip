@@ -26,8 +26,8 @@ class TextProteinDataset(BaseDataset):
         ann = self.annotation[index]
 
         return {
-            "text_input": ann["caption"],
-            "chain": ann["sequence"],
+            "text_input": self.text_processor(ann["caption"]),
+            "chain": self.vis_processor(ann["sequence"]),
             "id": ann["id"]
         }
 

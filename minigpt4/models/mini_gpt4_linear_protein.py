@@ -107,7 +107,7 @@ class MiniGPT4_Linear(Blip2Base):
         # device = protein_encode.device
         # # with self.maybe_autocast():
         # protein_embeds = protein_encode.to(device)
-        device = self.esm_encoder.device
+        device = next(self.esm_encoder.parameters()).device  
         batch_converter = self.esm_alphabet.get_batch_converter()
         sequences = [(f"protein{i}", seq) for i, seq in enumerate(protein_sequences)]
         batch_labels, batch_strs, batch_tokens = batch_converter(sequences)
@@ -117,7 +117,7 @@ class MiniGPT4_Linear(Blip2Base):
         batches = []   # because esm is a fairly large model, we split the batch into smaller batches so that it fits into the gpu
         for i in range(0, batch_tokens.shape[0], batch_size):  
             batch = batch_tokens[i:i + batch_size]  
-        batches.append(batch)  
+            batches.append(batch)  
 
         protein_embeds = []
         for batch in batches:
@@ -154,8 +154,7 @@ class MiniGPT4_Linear(Blip2Base):
     
     def forward(self, samples):
         protein_sequences = samples["chain"]  # a list of protein sequences ? 
-        protein_encode = self.encode_protein(protein_sequences)
-        protein_embeds, atts_protein = self.encode_protein(protein_encode)
+        protein_embeds, atts_protein = self.encode_protein(protein_sequences)
         
         if hasattr(samples, 'instruction_split'):  # Instruction tuning mode        # remember to add this attribute to the dataset
             print('Instruction tuning mode')
@@ -176,30 +175,30 @@ class MiniGPT4_Linear(Blip2Base):
             truncation=True,
             max_length=self.max_txt_len,
             add_special_tokens=False
-        ).to(protein_encode.device)
+        ).to(protein_embeds.device)
 
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.llama_tokenizer.pad_token_id, -100
         )
 
         empty_targets = (
-            torch.ones([atts_img.shape[0], atts_img.shape[1]+1],
-                       dtype=torch.long).to(protein_encode.device).fill_(-100)  # plus one for bos
+            torch.ones([atts_protein.shape[0], atts_protein.shape[1]+1],
+                       dtype=torch.long).to(protein_embeds.device).fill_(-100)  # plus one for bos
         )
         targets = torch.cat([empty_targets, targets], dim=1)
 
-        batch_size = img_embeds.shape[0]
+        batch_size = protein_embeds.shape[0]
         bos = torch.ones([batch_size, 1],
                          dtype=to_regress_tokens.input_ids.dtype,
                          device=to_regress_tokens.input_ids.device) * self.llama_tokenizer.bos_token_id
 
         bos_embeds = self.llama_model.model.embed_tokens(bos)
-        atts_bos = atts_img[:, :1]
+        atts_bos = atts_protein[:, :1]
 
         to_regress_embeds = self.llama_model.model.embed_tokens(to_regress_tokens.input_ids)
 
-        inputs_embeds = torch.cat([bos_embeds, img_embeds, to_regress_embeds], dim=1)
-        attention_mask = torch.cat([atts_bos, atts_img, to_regress_tokens.attention_mask], dim=1)
+        inputs_embeds = torch.cat([bos_embeds, protein_embeds, to_regress_embeds], dim=1)
+        attention_mask = torch.cat([atts_bos, atts_protein, to_regress_tokens.attention_mask], dim=1)
 
         with self.maybe_autocast():
             outputs = self.llama_model(

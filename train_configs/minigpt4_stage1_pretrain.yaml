@@ -1,5 +1,5 @@
 model:
-  arch: mini_gpt4
+  arch: mini_gpt4_linear
   model_type: pretrain_vicuna
   freeze_vit: True
   freeze_qformer: True
@@ -34,10 +34,10 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 800
+          protein_length: 150
         eval:
           name: "blip2_1d_protein_eval"
-          protein_length: 1000
+          protein_length: 400
     sample_ratio: 1
 
   swissprot: 
@@ -47,10 +47,10 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 800
+          protein_length: 150
         eval:
           name: "blip2_1d_protein_eval"
-          protein_length: 1000
+          protein_length: 4000
     sample_ratio: 1
 
 run:

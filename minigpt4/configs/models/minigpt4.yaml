@@ -1,5 +1,5 @@
 model:
-  arch: mini_gpt4
+  arch: mini_gpt4_linear
 
   # vit encoder
   image_size: 224
@@ -14,6 +14,7 @@ model:
   freeze_esm: True
   esm_precision: "fp16"
 
+  max_txt_len: 128
 
   # Q-Former
   num_query_token: 32

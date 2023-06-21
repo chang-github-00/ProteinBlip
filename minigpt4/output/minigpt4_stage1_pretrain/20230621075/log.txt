@@ -1,0 +1,241 @@
+{
+    "run": {
+        "task": "image_text_pretrain",
+        "lr_sched": "linear_warmup_cosine_lr",
+        "init_lr": 0.0001,
+        "min_lr": 8e-05,
+        "warmup_lr": 1e-06,
+        "weight_decay": 0.05,
+        "max_epoch": 4,
+        "batch_size_train": 64,
+        "batch_size_eval": 64,
+        "num_workers": 4,
+        "warmup_steps": 5000,
+        "iters_per_epoch": 5000,
+        "seed": 42,
+        "output_dir": "output/minigpt4_stage1_pretrain",
+        "amp": true,
+        "resume_ckpt_path": null,
+        "evaluate": false,
+        "train_splits": [
+            "train"
+        ],
+        "device": "cuda",
+        "world_size": 1,
+        "dist_url": "env://",
+        "distributed": false
+    },
+    "model": {
+        "arch": "mini_gpt4_linear",
+        "image_size": 224,
+        "drop_path_rate": 0,
+        "use_grad_checkpoint": false,
+        "vit_precision": "fp16",
+        "freeze_vit": true,
+        "freeze_qformer": true,
+        "protein_length": 800,
+        "freeze_esm": true,
+        "esm_precision": "fp16",
+        "num_query_token": 32,
+        "llama_model": "/mnt/default/users/v-changma1/vicuna-7b-v0",
+        "prompt": "",
+        "model_type": "pretrain_vicuna"
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip2_image_train",
+                "image_size": 224
+            },
+            "eval": {
+                "name": "blip2_image_eval",
+                "image_size": 224
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption"
+            },
+            "eval": {
+                "name": "blip_caption"
+            }
+        },
+        "protein_processor": {
+            "train": {
+                "name": "blip_1d_protein_train",
+                "protein_length": 800
+            },
+            "eval": {
+                "name": "blip_1d_protein_eval",
+                "protein_length": 1000
+            }
+        }
+    },
+    "datasets": {
+        "pdb": {
+            "data_type": "1d_protein",
+            "build_info": {
+                "storage": "/mnt/default/users/v-changma1/ProteinBlip/dataset/protein_text_alignment_data/align_data_split1.txt"
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip2_1d_protein_train",
+                    "protein_length": 400
+                },
+                "eval": {
+                    "name": "blip2_1d_protein_eval",
+                    "protein_length": 400
+                }
+            },
+            "sample_ratio": 1
+        },
+        "swissprot": {
+            "data_type": "1d_protein",
+            "build_info": {
+                "storage": "/mnt/default/users/v-changma1/ProteinBlip/dataset/protein_text_alignment_data/align_data_split2.txt"
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip2_1d_protein_train",
+                    "protein_length": 400
+                },
+                "eval": {
+                    "name": "blip2_1d_protein_eval",
+                    "protein_length": 4000
+                }
+            },
+            "sample_ratio": 1
+        }
+    }
+}
+{
+    "run": {
+        "task": "image_text_pretrain",
+        "lr_sched": "linear_warmup_cosine_lr",
+        "init_lr": 0.0001,
+        "min_lr": 8e-05,
+        "warmup_lr": 1e-06,
+        "weight_decay": 0.05,
+        "max_epoch": 4,
+        "batch_size_train": 64,
+        "batch_size_eval": 64,
+        "num_workers": 4,
+        "warmup_steps": 5000,
+        "iters_per_epoch": 5000,
+        "seed": 42,
+        "output_dir": "output/minigpt4_stage1_pretrain",
+        "amp": true,
+        "resume_ckpt_path": null,
+        "evaluate": false,
+        "train_splits": [
+            "train"
+        ],
+        "device": "cuda",
+        "world_size": 1,
+        "dist_url": "env://",
+        "distributed": false
+    },
+    "model": {
+        "arch": "mini_gpt4_linear",
+        "image_size": 224,
+        "drop_path_rate": 0,
+        "use_grad_checkpoint": false,
+        "vit_precision": "fp16",
+        "freeze_vit": true,
+        "freeze_qformer": true,
+        "protein_length": 800,
+        "freeze_esm": true,
+        "esm_precision": "fp16",
+        "max_txt_len": 128,
+        "num_query_token": 32,
+        "llama_model": "/mnt/default/users/v-changma1/vicuna-7b-v0",
+        "prompt": "",
+        "model_type": "pretrain_vicuna"
+    },
+    "preprocess": {
+        "vis_processor": {
+            "train": {
+                "name": "blip2_image_train",
+                "image_size": 224
+            },
+            "eval": {
+                "name": "blip2_image_eval",
+                "image_size": 224
+            }
+        },
+        "text_processor": {
+            "train": {
+                "name": "blip_caption"
+            },
+            "eval": {
+                "name": "blip_caption"
+            }
+        },
+        "protein_processor": {
+            "train": {
+                "name": "blip_1d_protein_train",
+                "protein_length": 800
+            },
+            "eval": {
+                "name": "blip_1d_protein_eval",
+                "protein_length": 1000
+            }
+        }
+    },
+    "datasets": {
+        "pdb": {
+            "data_type": "1d_protein",
+            "build_info": {
+                "storage": "/mnt/default/users/v-changma1/ProteinBlip/dataset/protein_text_alignment_data/align_data_split1.txt"
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip2_1d_protein_train",
+                    "protein_length": 400
+                },
+                "eval": {
+                    "name": "blip2_1d_protein_eval",
+                    "protein_length": 400
+                }
+            },
+            "sample_ratio": 1
+        },
+        "swissprot": {
+            "data_type": "1d_protein",
+            "build_info": {
+                "storage": "/mnt/default/users/v-changma1/ProteinBlip/dataset/protein_text_alignment_data/align_data_split2.txt"
+            },
+            "text_processor": {
+                "train": {
+                    "name": "blip_caption"
+                }
+            },
+            "vis_processor": {
+                "train": {
+                    "name": "blip2_1d_protein_train",
+                    "protein_length": 400
+                },
+                "eval": {
+                    "name": "blip2_1d_protein_eval",
+                    "protein_length": 4000
+                }
+            },
+            "sample_ratio": 1
+        }
+    }
+}

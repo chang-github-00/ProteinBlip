@@ -34,7 +34,7 @@ class BlipCaptionProcessor(BaseProcessor):
     def __call__(self, caption):
         caption = self.prompt + self.pre_caption(caption)
 
-        return captionff
+        return caption
 
     @classmethod
     def from_config(cls, cfg=None):
@@ -148,9 +148,9 @@ class Blip2ProteinSequenceTrainProcessor(BaseProcessor):
         self.protein_length = protein_length
         
     def transform(self, item):
-        item['sequence'] = list(re.sub(r"[UZOB]", "X", item['sequence']))
-        protein_length = min(len(item['sequence']), self.protein_length)
-        item['sequence'] = ''.join(item['sequence'][:protein_length])
+        item = list(re.sub(r"[UZOB]", "X", item))
+        protein_length = min(len(item), self.protein_length)
+        item= ''.join(item[:protein_length])
         return item
 
     def __call__(self, item):
@@ -172,9 +172,9 @@ class Blip2ProteinSequenceEvalProcessor(BaseProcessor):
         self.protein_length = protein_length
         
     def transform(self, item):
-        item['sequence'] = list(re.sub(r"[UZOB]", "X", item['sequence']))
-        protein_length = min(len(item['sequence']), self.protein_length)
-        item['sequence'] = ''.join(item['sequence'][:protein_length])
+        item = list(re.sub(r"[UZOB]", "X", item))
+        protein_length = min(len(item), self.protein_length)
+        item= ''.join(item[:protein_length])
         return item
 
     def __call__(self, item):

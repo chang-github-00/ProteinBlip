@@ -14,7 +14,7 @@ model:
   freeze_esm: True
   esm_precision: "fp16"
 
-  max_txt_len: 128
+  max_txt_len: 100
 
   # Q-Former
   num_query_token: 32

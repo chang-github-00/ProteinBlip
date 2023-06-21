@@ -34,7 +34,7 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 150
+          protein_length: 400
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 400
@@ -47,7 +47,7 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 150
+          protein_length: 400
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 4000
@@ -63,8 +63,8 @@ run:
 
   weight_decay: 0.05
   max_epoch: 4
-  batch_size_train: 64
-  batch_size_eval: 64
+  batch_size_train: 1
+  batch_size_eval: 1
   num_workers: 4
   warmup_steps: 5000
   iters_per_epoch: 5000

@@ -1,0 +1,5 @@
+datasets:
+  cc_sbu:
+    data_type: images
+    build_info:
+      storage: /mnt/default/users/v-changma1/MiniGPT-4/dataset/cc_sbu/cc_sbu_dataset/{00000..00016}.tar

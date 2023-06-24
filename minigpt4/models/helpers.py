@@ -53,9 +53,11 @@ class PerceiverAttention(nn.Module):
         """
         h = self.heads
 
-        q = self.to_q(x) # (b, L, D)
-        context = default(context, x)    
-        k, v = self.to_kv(context).chunk(2, dim = -1) # (b, M, D)
+        context = default(context, x)
+        
+        q = self.to_q(context) # (b, L, D)
+            
+        k, v = self.to_kv(x).chunk(2, dim = -1) # (b, M, D)
 
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> (b h) n d', h = h), (q, k, v))
 
@@ -95,7 +97,7 @@ class PerceiverAdapter(nn.Module):
             self.layers.append(
                 nn.ModuleList(
                     [
-                        PerceiverAttention(query_dim=query_dim, dim_head=dim_head, heads = heads),
+                        PerceiverAttention(query_dim=dim, dim_head=dim_head, heads = heads),
                         FeedForward(dim=dim, mult=ff_mult),
                     ]
                 )

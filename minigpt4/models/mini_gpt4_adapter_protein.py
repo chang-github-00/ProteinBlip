@@ -90,7 +90,7 @@ class MiniGPT4_Adapter(Blip2Base):
                                                 depth = adapter_depth,
                                                 dim_head = adapter_dim_head,
                                                 heads = adapter_heads,
-                                                num_latents = num_adapter_latent_tokens)
+                                                num_latents = adapter_num_latent_tokens)
         
         self.esm_llama_proj = nn.Linear(
             self.esm_encoder.embed_dim, self.llama_model.config.hidden_size
@@ -175,7 +175,7 @@ class MiniGPT4_Adapter(Blip2Base):
             protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, pqa_prompt)
         elif self.prompt_list:
             prompt = random.choice(self.prompt_list)
-            img_embeds, atts_img = self.prompt_wrap(img_embeds, atts_img, prompt)
+            protein_embeds, atts_protein = self.prompt_wrap(img_embeds, atts_img, prompt)
 
         self.llama_tokenizer.padding_side = "right"
         

@@ -34,10 +34,10 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 400
+          protein_length: 1000
         eval:
           name: "blip2_1d_protein_eval"
-          protein_length: 400
+          protein_length: 1000
     sample_ratio: 1
 
   swissprot: 
@@ -47,10 +47,10 @@ datasets:
     vis_processor:
         train:
           name: "blip2_1d_protein_train"
-          protein_length: 400
+          protein_length: 1000
         eval:
           name: "blip2_1d_protein_eval"
-          protein_length: 4000
+          protein_length: 10000
     sample_ratio: 1
 
 run:
@@ -63,8 +63,8 @@ run:
 
   weight_decay: 0.05
   max_epoch: 4
-  batch_size_train: 1
-  batch_size_eval: 1
+  batch_size_train: 8
+  batch_size_eval: 8
   num_workers: 4
   warmup_steps: 5000
   iters_per_epoch: 5000

@@ -1,5 +1,5 @@
 model:
-  arch: mini_gpt4_linear
+  arch: mini_gpt4_adapter
 
   # vit encoder
   image_size: 224
@@ -18,6 +18,12 @@ model:
 
   # Q-Former
   num_query_token: 32
+
+  # Adapter
+  adapter_depth: 2
+  adapter_dim_head: 64
+  adapter_heads: 8
+  adapter_num_latent_tokens: 32
 
   # Vicuna
   llama_model:  "/mnt/default/users/v-changma1/vicuna-7b-v0"

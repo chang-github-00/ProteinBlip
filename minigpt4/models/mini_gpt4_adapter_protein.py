@@ -175,7 +175,7 @@ class MiniGPT4_Adapter(Blip2Base):
             protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, pqa_prompt)
         elif self.prompt_list:
             prompt = random.choice(self.prompt_list)
-            protein_embeds, atts_protein = self.prompt_wrap(img_embeds, atts_img, prompt)
+            protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, prompt)
 
         self.llama_tokenizer.padding_side = "right"
         

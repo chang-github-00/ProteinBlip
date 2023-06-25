@@ -1,0 +1,40 @@
+model:
+  arch: mini_gpt4_adapter
+  model_type: pretrain_vicuna
+  freeze_vit: True
+  freeze_qformer: True
+  max_txt_len: 160
+  end_sym: "###"
+  low_resource: False
+  ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage1_pretrain/20230624105/checkpoint_1.pth
+
+
+datasets:
+  pdb:
+    text_processor:
+        train:
+          name: "blip_caption"
+    vis_processor:
+        train:
+          name: "blip2_1d_protein_train"
+          protein_length: 1000
+        eval:
+          name: "blip2_1d_protein_eval"
+          protein_length: 1000
+    sample_ratio: 1
+
+  swissprot: 
+    text_processor:
+        train:
+          name: "blip_caption"
+    vis_processor:
+        train:
+          name: "blip2_1d_protein_train"
+          protein_length: 1000
+        eval:
+          name: "blip2_1d_protein_eval"
+          protein_length: 10000
+    sample_ratio: 1
+
+run:
+  task: image_text_pretrain

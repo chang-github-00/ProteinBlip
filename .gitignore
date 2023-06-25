@@ -1,2 +1,3 @@
 dataset/*
 *.pyc
+minigpt4/output/*

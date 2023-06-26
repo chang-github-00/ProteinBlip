@@ -64,3 +64,4 @@ dependencies:
     - fair-esm
     - biopython
     - einops
+    - einops-exts

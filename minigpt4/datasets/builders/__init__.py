@@ -14,6 +14,7 @@ from minigpt4.datasets.builders.image_text_pair_builder import (
 from minigpt4.datasets.builders.text_protein_pair_builder import (
     SwissProtBuilder,
     PDBBuilder,
+    MolInstructBuilder,
 )
     
 from minigpt4.common.registry import registry
@@ -24,6 +25,7 @@ __all__ = [
     "CCSBUAlignBuilder",
     "SwissProtBuilder",
     "PDBBuilder",
+    "MolInstructBuilder",
 ]
 
 

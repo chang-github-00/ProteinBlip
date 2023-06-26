@@ -25,12 +25,16 @@ class TextProteinDataset(BaseDataset):
 
         ann = self.annotation[index]
 
-        return {
+        output = {
             "text_input": self.text_processor(ann["caption"]),
             "chain": self.vis_processor(ann["sequence"]),
-            "id": ann["id"]
         }
 
+        for attr in ann:
+            if attr in ["id", "prompt", "instruction_split"]:
+                output[attr] = ann[attr]
+        
+        return output
     
     def load_annotation_sequences(self, ann_path):
         annotations = []

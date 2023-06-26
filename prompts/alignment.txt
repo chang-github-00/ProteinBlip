@@ -1,0 +1,5 @@
+Based on the given protein sequence : <protein><proteinHere></protein> Describe this protein in detail.
+This is a protein sequence. <protein><proteinHere></protein> Please give an abstract summary of this protein.
+Based on this protein sequence : <protein><proteinHere></protein> Tell me about this protein in detail.
+This is a protein sequence : <protein><proteinHere></protein> Please provide a detailed description of the protein.
+Protein sequence: <protein><proteinHere></protein> Could you describe this protein for me?

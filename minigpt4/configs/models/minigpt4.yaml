@@ -10,11 +10,11 @@ model:
   freeze_qformer: False
 
   # protein specific
-  protein_length: 800
+  protein_length: 1000
   freeze_esm: True
   esm_precision: "fp16"
 
-  max_txt_len: 100
+  max_txt_len: 160
 
   # Q-Former
   num_query_token: 32
@@ -47,7 +47,7 @@ preprocess:
     protein_processor:
         train:
           name: "blip_1d_protein_train"
-          protein_length: 800
+          protein_length: 1000
         eval:
           name: "blip_1d_protein_eval"
           protein_length: 1000

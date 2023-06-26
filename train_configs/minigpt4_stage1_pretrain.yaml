@@ -6,6 +6,8 @@ model:
 
   # protein specific
   freeze_esm: True
+  prompt_path: "prompts/alignment.txt"
+  prompt_template: '###Human: {} ###Assistant: '
 
 datasets:
   # laion:
@@ -38,7 +40,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 1000
-    sample_ratio: 1
+    sample_ratio: 0.2
 
   swissprot: 
     text_processor:
@@ -51,7 +53,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.8
 
 run:
   task: image_text_pretrain
@@ -67,10 +69,10 @@ run:
   batch_size_eval: 8
   num_workers: 4
   warmup_steps: 5000
-  iters_per_epoch: 20000
+  iters_per_epoch: 5000
 
   seed: 42
-  output_dir: "output/minigpt4_stage1_pretrain"
+  output_dir: "/mnt/default/users/v-changma1/training_output/minigpt4_stage1_pretrain_align_prompt"
 
   amp: True
   resume_ckpt_path: null

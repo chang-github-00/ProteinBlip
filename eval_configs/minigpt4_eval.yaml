@@ -6,7 +6,7 @@ model:
   max_txt_len: 160
   end_sym: "###"
   low_resource: False
-  ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage1_pretrain/20230624105/checkpoint_1.pth
+  ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage1_pretrain/20230624105/checkpoint_4.pth
 
 
 datasets:

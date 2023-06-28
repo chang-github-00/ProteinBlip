@@ -11,7 +11,13 @@ source activate minigpt4
 bash run_scripts/run_pretraining_stage_1.sh
 ```
 
+## Pretraining Stage 2
+```
+bash run_scripts/run_finetuning_stage_2.sh
+```
+
 ## Evaluation with Simple Query
 ```
 bash run_scripts/run_eval.sh
 ```
+

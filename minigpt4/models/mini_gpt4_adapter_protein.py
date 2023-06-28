@@ -97,6 +97,7 @@ class MiniGPT4_Adapter(Blip2Base):
         )
         self.max_txt_len = max_txt_len
         self.end_sym = end_sym
+        self.prompt_template = prompt_template
         
         if prompt_path:
             with open(prompt_path, 'r') as f:
@@ -148,7 +149,7 @@ class MiniGPT4_Adapter(Blip2Base):
         atts_llama = torch.ones(inputs_llama.size()[:-1], dtype=torch.long).to(device)
         return inputs_llama, atts_llama
     
-    def prompt_wrap(self, img_embeds, atts_img, prompt):
+    def prompt_wrap(self, img_embeds, atts_img, prompt): # single prompt for a batch
         if prompt:
             batch_size = img_embeds.shape[0]
             p_before, p_after = prompt.split('<proteinHere>')
@@ -164,15 +165,45 @@ class MiniGPT4_Adapter(Blip2Base):
         else:
             return img_embeds, atts_img
         
-    
+    def prompt_list_wrap(self, img_embeds, atts_img, prompt_list): # multiple prompts for a batch
+        if prompt_list:
+            prompt_list = [p if "<proteinHere>" in p else "<protein><proteinHere></protein>" for p in prompt_list]   # filter prompts without <proteinHere>
+            prompt_list = [self.prompt_template.format(p) for p in prompt_list] # add formatting, like ###Human: {} ###Assistant: 
+            
+            batch_size = img_embeds.shape[0]
+            prompt_list_no_ph = ["".join(prompt.split('<proteinHere>')) for prompt in prompt_list]
+            p_before = [sentence.split("<proteinHere>")[0] for sentence in prompt_list]  
+            
+            p_before_tokens = self.llama_tokenizer(
+                p_before, return_tensors="pt", add_special_tokens=False, padding="longest").to(img_embeds.device)
+            
+            p_before_lengths = p_before_tokens.attention_mask.sum(dim=1)  
+            
+            p_all_tokens = self.llama_tokenizer(  
+                prompt_list_no_ph, return_tensors="pt", add_special_tokens=False, padding="longest").to(img_embeds.device)
+            
+            
+            p_all_embeds = self.llama_model.model.embed_tokens(p_all_tokens.input_ids)
+            
+            wrapped_img_embeds = []
+            wrapped_atts_img = []
+            for i, length in enumerate(p_before_lengths):
+                wrapped_img_embeds.append(torch.cat([p_all_embeds[i, :length], img_embeds[i], p_all_embeds[i, length:]], dim=0))
+                
+            wrapped_img_embeds = torch.stack(wrapped_img_embeds, dim=0)
+            wrapped_atts_img = torch.cat([atts_img, p_all_tokens.attention_mask], dim=1)
+            return wrapped_img_embeds, wrapped_atts_img
+        else:
+            return img_embeds, atts_img
+        
     def forward(self, samples):
-        protein_sequences = samples["chain"]  # a list of protein sequences ? 
+        protein_sequences = samples["chain"]  # a list of protein sequences 
         protein_embeds, atts_protein = self.encode_protein(protein_sequences)
         
-        if hasattr(samples, 'instruction_split'):  # Instruction tuning mode        # remember to add this attribute to the dataset
-            print('Instruction tuning mode')
-            pqa_prompt = '###Human: <protein><proteinHere></protein> '
-            protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, pqa_prompt)
+        if hasattr(samples, 'instruction_split') or 'instruction_split' in samples:  # Instruction tuning mode        # remember to add this attribute to the dataset
+            # print('Instruction tuning mode')
+            pqa_prompt = samples["prompt"]
+            protein_embeds, atts_protein = self.prompt_list_wrap(protein_embeds, atts_protein, pqa_prompt)
         elif self.prompt_list:
             prompt = random.choice(self.prompt_list)
             protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, prompt)

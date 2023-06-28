@@ -1,5 +1,5 @@
 model:
-  arch: mini_gpt4
+  arch: mini_gpt4_adapter
   model_type: pretrain_vicuna
   freeze_vit: True
   freeze_qformer: True
@@ -12,14 +12,18 @@ model:
 
 
 datasets:
-  cc_sbu_align:
-    vis_processor:
-      train:
-        name: "blip2_image_train"
-        image_size: 224
+  molinstruct:
     text_processor:
-      train:
-        name: "blip_caption"
+        train:
+          name: "blip_caption"
+    vis_processor:
+        train:
+          name: "blip2_1d_protein_train"
+          protein_length: 1000
+        eval:
+          name: "blip2_1d_protein_eval"
+          protein_length: 10000
+    sample_ratio: 1
 
 run:
   task: image_text_pretrain
@@ -31,11 +35,11 @@ run:
 
   weight_decay: 0.05
   max_epoch: 5
-  iters_per_epoch: 200
-  batch_size_train: 12
-  batch_size_eval: 12
+  iters_per_epoch: 1000
+  batch_size_train: 4
+  batch_size_eval: 4
   num_workers: 4
-  warmup_steps: 200
+  warmup_steps: 1000
 
   seed: 42
   output_dir: "output/minigpt4_stage2_finetune"

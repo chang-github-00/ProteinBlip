@@ -103,6 +103,7 @@ class MiniGPT4_Adapter(Blip2Base):
             with open(prompt_path, 'r') as f:
                 raw_prompts = f.read().splitlines()
             filted_prompts = [raw_prompt for raw_prompt in raw_prompts if "<proteinHere>" in raw_prompt]
+            self.raw_prompt_list = filted_prompts
             self.prompt_list = [prompt_template.format(p) for p in filted_prompts]
             print('Load {} training prompts'.format(len(self.prompt_list)))
             print('Prompt Example \n{}'.format(random.choice(self.prompt_list)))

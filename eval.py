@@ -55,7 +55,12 @@ def main():
     
     args = parse_args()
     cfg = Config(args)
-
+    
+    ckpt_last_name = cfg.model_cfg.ckpt.split('.')[0]
+    file_name = '_'.join(ckpt_last_name.split('/')[-2:])
+    file_name = "minigpt4/output_test/test_" + file_name+ ".txt"
+    output_file = open(file_name, 'a')
+        
     model_config = cfg.model_cfg
     model_config.device_8bit = args.gpu_id
     model_cls = registry.get_model_class(model_config.arch)
@@ -76,6 +81,9 @@ def main():
     # query = [
     #     "The function of this protein is"
     # ]
+    
+    
+    
     while(1):
         print("Please input a protein sequence:")
         sequence = input()
@@ -89,6 +97,12 @@ def main():
         output_text, _ = generator.generate(query, protein_sequence)
         
         print(output_text)
+        
+        output_file.write(sequence + '\n')
+        output_file.write(query[0] + '\n')
+        output_file.write(output_text)
+        output_file.write('\n')
+        output_file.write('\n')
     
 
 if __name__ == "__main__":

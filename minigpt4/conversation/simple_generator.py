@@ -2,7 +2,7 @@
 import argparse
 import time
 from PIL import Image
-
+import random
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaTokenizer
 from transformers import StoppingCriteria, StoppingCriteriaList
@@ -25,7 +25,6 @@ class StoppingCriteriaSub(StoppingCriteria):
 
         return False
 
-
 class ProteinTextGenerator:
     def __init__(self, model, vis_processor, device='cuda:0'):
         self.device = device
@@ -34,23 +33,32 @@ class ProteinTextGenerator:
         stop_words_ids = [torch.tensor([835]).to(self.device),
                           torch.tensor([2277, 29937]).to(self.device)]  # '###' can be encoded in two different ways.
         self.stopping_criteria = StoppingCriteriaList([StoppingCriteriaSub(stops=stop_words_ids)])
+        self.prompt_template = self.model.prompt_template
+        self.prompt_list = self.model.raw_prompt_list
         
-    def get_context_emb(self, queries, protein_list): # Default format : protein + query
+    def get_context_emb(self, queries, protein_list): # Default format : protein + query    => bos + prompt <protein> + query
         protein_embs = []
         for protein in protein_list:
             protein_emb, _ = self.model.encode_protein([protein]) # should input a list of protein, output shape [1, 32, 4096]
             protein_embs.append(protein_emb)
-        query_tokens = [
-            self.model.llama_tokenizer(
-                query, return_tensors="pt", add_special_tokens=i == 0).to(self.device).input_ids
-            # only add bos to the first seg
-            for i, query in enumerate(queries)
-        ]
-        query_embs = [self.model.llama_model.model.embed_tokens(query_t) for query_t in query_tokens]
+            
+        # wrap prompt around query: 
+        prompt = random.choice(self.prompt_list)
+        queries = [self.prompt_template.format(prompt + query) for query in queries]
+        p_before = [query.split('<proteinHere>')[0] for query in queries]
+        p_after = [query.split('<proteinHere>')[1] for query in queries]
         
-        mixed_embs = [ torch.cat([query[:,:1], protein, query[:,1:]], dim=1)  for protein,query in zip(protein_embs, query_embs)] # bos + protein + query 
+        p_before_tokens = self.model.llama_tokenizer(p_before, return_tensors="pt", add_special_tokens=False).to(self.device).input_ids
+        p_after_tokens = self.model.llama_tokenizer(p_after, return_tensors="pt", add_special_tokens=True).to(self.device).input_ids
+        
+        
+        p_before_embs = [self.model.llama_model.model.embed_tokens(p_before_t).unsqueeze(0) for p_before_t in p_before_tokens]
+        p_after_embs = [self.model.llama_model.model.embed_tokens(p_after_t).unsqueeze(0) for p_after_t in p_after_tokens]
+        
+        mixed_embs = [ torch.cat([query_after[:,:1], query_before, protein, query_after[:,1:]], dim=1)  for query_before, protein, query_after in zip(p_before_embs, protein_embs, p_after_embs)] # bos + protein + query 
         mixed_embs = torch.cat(mixed_embs, dim=0)
         return mixed_embs
+    
 
     def generate(self, queries, protein_list, max_new_tokens=300, num_beams=1, min_length=1, top_p=0.9,
                repetition_penalty=1.0, length_penalty=1, temperature=1.0, max_length=2000):

@@ -1,0 +1,3 @@
+Based on the given protein sequence: <protein><proteinHere></protein>, 
+This is a protein sequence: <protein><proteinHere></protein>.
+Protein sequence: <protein><proteinHere></protein>. 

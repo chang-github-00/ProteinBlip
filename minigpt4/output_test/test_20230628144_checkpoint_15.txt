@@ -1,0 +1,94 @@
+MPGWFKKAWYGLASLLSFSSFILIIVALVVPHWLSGKILCQTGVDLVNATDRELVKFIGDIYYGLFRGCKVRQCGLGGRQSQFTIFPHLVKELNAGLHVMILLLLFLALALALVSMGFAILNMIQVPYRAVSGPGGICLWNVLAGGVVALAIASFVAAVKFHDLTERIANFQEKLFQFVVVEEQYEESFWICVASASAHAANLVVVAISQIPLPEIKTKIEEATVTAEDILY
+Describe this protein. 
+the transmembrane proteins claudin-1 and claudin-3 participate in formation of the tight junction tj and adherens junction aj membrane structures in the plasma membrane of epithelial cells and play important roles in regulating cell-cell adhesion and maintaining tissue barriers claudin-1 is considered a critical component of tj assembly in epithelial
+Journal of molecular biology research , volume 26, issue 3,
+plos one , publication date 17 oct 2017
+the 3d structure of claudin-1 at 3 0 å resolution has been determined by cross-validation of multiple experimental structures and complementary computational models claudin-1 was found to form a hexamer in the membrane, with each monomer forming a predominantly helical transmembrane domain and a largely structurally conserved cytoplasmic domain the cytoplasmic domain
+claudin-3,
+the cryo-em structure of claudin-3 at 3 5 å resolution provides molecular insights into its possible tetrameric organization and the formation of tj and aj channels, thereby expanding our understanding of the complex mechanism of tight junction formation claudin-3, like claudin-1, was revealed to form a tetramer with
+GT: wrong
+
+MANAGLQLLGFILASLGWIGSIVSTALPQWKIYSYAGDNIVTAQAIYEGLWMSCVSQSTGQIQCKVFDSLLNLNSTLQATRALMVIGILLGLIAIFVSTIGMKCMRCLEDDEVQKMWMAVIGGIIFVISGLATLVATAWYGNRIVQEFYDPMTPVNARYEFGQALFTGWAAASLCLLGGLLSCSCPRKTTSYPTPRPYPKPTPSSGKDYV
+What is the function of this protein ?
+claudins form tight tetrameric pores that facilitate the transmigration of solutes across the blood-brain barrier and the blood-brain/cerebrospinal fluid barrier claudins form a family of tight-junctions tjs that are specialized in selective permeability in general, the barrier properties of claudins are determined by their structural properties, as
+Because cell membrane-spanning claudins form tight-junctions tjs at cell-cell boundaries, their composition, structure, and arrangement have been expected to provide a molecular filter that selectively permeates specific solutes while excluding others to examine claudin function in detail, we have studied claudin-4 in the blood-brain barrier and in mammalian brain here we show
+Both directly and indirectly through their interactions with other tight-junction components, claudins play a central role in the selective permeability of the blood-brain barrier and the blood-brain/cerebrospinal fluid barrier claudins form tetramers with each other, but it is generally believed that they do not associate in higher-order oligomers in contrast, we show that claudin-4
+The first structures of claudin-4 tetramers and hexamers in blood-brain barrier,
+GT: domain partly right, claudin-1
+
+MLRGSARTYWTLTGLWVLLRAGTLVVGLLFQRLFDALGAGGGVWLIIALVAAIEAGRLFLQFGVMINRLEPRVQYGTTARLRHALLGSALRGSEVTARTSPGESLRTVGEDVDETGFFVAWAPTNLAHWLFVAASVTVMMRIDAVVTGALLALLVLLTLVTALAHSRFLRHRRATRAASGEVAGALREMVGAVGAVQAAAAEPQVAAHVAGLNGARAEAAVREELYAVVQRTVIGNPAPIGVGVVLLLVAGRMDEGTFSVGDLALFAFYLQILTEALGSIGMLSVRLQRVSVALGRITNNLGCRLRRSLERASPPIASDAPGGTGEGAAAPDAGPEPAPPLRELAVRGLTARHPGAGHGIEDVDLVVERHTVTVVTGRVGSGKSTLVRAVLGLLPHERGTVLWNGEPIADPASFLVAPRCGYTPQVPCLFSGTVRENVLLGRDGAAFDEAVRLAVAEPDLAAMQDGPDTVVGPRGLRLSGGQIQRVAIARMLVGDPELVVLDDVSSALDPETEHLLWERLLDGTRTVLAVSHRPALLRAADRVVVLEGGRVEASGTFEEVMAVSAEMGRIWTGAGPGGGDAGPAPQSPPAG
+What is the function of this protein ?
+mycobacterium tuberculosis uses transporters to import several essential drugs including isoniazid and rifampicin to overcome its innate antibiotic resistance mechanisms by transporter-mediated drug import in this study, we characterized atbb2, a m. tuberculosis atp-binding cassette transporter, which delivers rifampicin to mycobacterial cells in the absence of atp, it shares a high degree of sequence identity with
+Ii
+nucleotide → a-d-ribose in the presence of adenosine 5'-diphosphate <sub>2- </sub>atp <sub>2 </sub>- <i> </i>atp <sub>2 </sub>- <i> </i>atp <sub>2 </sub>- <i> </i>atp <sub>2 </sub>- <i> </i>d-ribose, generating an alternatively liganded drug transporter <i> </i>adra <sub>1 </sub>, adra <sub>2 </sub> and adrb <sub>1 </sub> have been characterized for the transport of drugs, including isoniazid and rifampicin, to understand the
+Humanities &amp; social sciences &amp; life sciences &amp
+GT: wrong
+
+MSGGGPSGGGPGGSGRARTSSFAEPGGGGGGGGGGPGGSASGPGGTGGGKASVGAMGGGVGASSSGGGPGGSGGGGSGGPGAGTSFPPPGVKLGRDSGKVTTVVATLGQGPERSQEVAYTDIKVIGNGSFGVVYQARLAETRELVAIKKVLQDKRFKNRELQIMRKLDHCNIVRLRYFFYSSGEKKDELYLNLVLEYVPETVYRVARHFTKAKLTIPILYVKVYMYQLFRSLAYIHSQGVCHRDIKPQNLLVDPDTAVLKLCDFGSAKQLVRGEPNVSYICSRYYRAPELIFGATDYTSSIDVWSAGCVLAELLLGQPIFPGDSGVDQLVEIIKVLGTPTREQIREMNPNYTEFKFPQIKAHPWTKVFKSRTPPEAIALCSSLLEYTPSSRLSPLEACAHSFFDELRCLGTQLPNNRPLPPLFNFSAGELSIQPSLNAILIPPHLRSPAGTTTLTPSSQALTETPTSSDWQSTDATPTLTNSS
+What is the function of this protein ?
+tau-protein kinase i phkis is a serine-threonine kinase responsible for cellular pathologies including alzheimer disease ad and other tauopathies the exact role of phkis in pathogenesis remains unclear, but studies have provided clues to the participation of this kinase in regulating axon remodelling, protein kinase c pkc ,
+Pradaxa ® was launched in 2010 for stroke prevention in patients with atrial fibrillation and for dabigatran induced thrombocytopenia in patients with atrial fibrillation, idiopathic pulmonary embolism, and other thromboembolic conditions however, in some cases idpets dabigatran-induced thrombocytopenia severe bleeding has been reported although the exact mechanisms of dabigatran-induced thrombocytopenia are unknown, phkis has
+Hypothesis current data support a model in which dabigatran induces thrombocytopenia by inhibition of phkis, which in turn impairs tau cleavage and/or regulation of other downstream proteins that participate in axon remodelling leading to neuroinflammation, gliosis, and tauopathy therefore, the primary
+GT: right
+
+MGSSEQELKAIVKDLGCGPYFLGTYDKRFPGFVSPHKLACAIVNTAGRETGGVHWMAFAWNPRSKTCYLFEPFGFSDQRLKQVYQFEYESLLRRSAIASSPDRCITLEKSTQSVQGPNSAACGLFCCMFLHAFANWPQTPMDHNPTMNLITGVPNSMLNSPQVQPTLRRNQEQLYSFLERHSPYFRSHSAQIRSATSFCHLKNM
+What is the function of this protein ?
+the protease activity of the protease from human adenovirus 5 has been shown to be essential for the virulence of the virus in humans one of the key cleavage sites is the cysteine-rich recognition sequence crrs which has the consensus sequence cys-cys-cys-cys-pro-ala, where the pro-alpha-amino group of the
+Klein, t c , lynch, s w , vogel, k and fink,
+journal of molecular biology , 2004-2005 , p 1121-1121
+a crystal structure of the adenovirus protease ap1 in complex with a cysteine-rich recognition sequence from a target protein has been determined to 2 1 å resolution the structure shows that the protease has a previously unknown 'hinge' region that is positioned between the two active site clefts the hinge region appears to
+Klein, t c , lynch, s w , vogel, k , fink, j t s ,
+journal of molecular biology , 2004, 342/5/1121
+adherence of adenovirus types 2 and 5 to human cells is mediated by the interaction of the viral f3 gly
+GT: right
+
+MRCAKHSLYGFAVPFFSQKGHRLFYLYIQQ
+Describe this protein based on its sequence.
+the mucin-like protein mlp is part of the epidermal growth factor efg family, which plays a major role in cellular proliferation and tissue repair and regeneration in addition to the mlp family, the efg family comprises four proteins, including efg1, efg2, efg3, and efg4 the mlp family is expressed
+In the mlp family of proteins, the epidermal growth factor-like
+Design, synthesis, crystal structure, and biological evaluation of a
+Multiple tandem repeats of leucine-rich repeat leu-rr and k
+Sandwich assay of peptide-protein interactions using biotinylated peptides
+Because of their specificity for cell surface membranes, leucine-rich repeat leu-rr
+Structural characterization of a protein encoded by a small circular
+Mutation of the epidermal growth factor receptor egr
+The epidermal growth factor efg-like protein mlp is a multifunctional
+The peptidomimetic leu-18-peptide, where leu-18 is a dipeptide composed
+Structural basis for the recognition of the peptide-mhc molecule by
+A family of type i membrane proteins containing multiple
+GT: wrong
+
+
+LNLIAIYNPNTTATMIDGAFFQDEVEQRKIMAVPMVFQDNEHIGQGRMTLEEIVAKLDTNSAEKDAAALNAKDAFDVLVIGGGPAGATAAIYAARKGINTGIVAERFGGQVMDTMDIENTSVQKTQGPKFAAEMEAHVREYDVDIMNLQRVSKITGAEQTANGLVEVELENGAKLESKTVILSTGARWREMNVPGEAEYRTRGVAYCPHCDGPLFKGKRVAVIGGGNSGVEAAIDLAGIVEHVTLVEFDTKLRADQVLQNKLNSLPN
+Please give an abstract summary of this protein.
+in the anaerobic gram-positive pathogen staphylococcus aureus, redox homeostasis is maintained through the enzymatic activities of the nadh-dependent redoxase nadhr and the nadh-dehydrogenase/nadph-reductase complex xxxth, xxxxth and xxxxth are also known to contribute to this redox balance by generating reactive oxygen species via the oxidation of reduced nadp
+Reduction of nadp+ to nadph is a fundamental step for a large number of
+Anxh, a low-affinity antibody to the antibody f in the mouse, cross-hybridizes in
+Nodularin causes disease by altering mitochondrial function, thereby triggering a respiratory chain
+The mechanism by which nadh contributes to the respiratory chain is still a
+Efficient purification of the m gene product, which is required for anaerobic growth
+Hypotheses have been advanced about the enzymatic activity of xxxxth and xxxth, but
+Mutagenesis experiments showed that mutation of cys32, a member of a conserved cysteine
+The crystal structure of xxxxth shows that the flavin adenine nucleotide binding domain
+Electron microscopy shows that nadph
+GT: wrong
+
+MIWKDVFKKGDSYFNTGDLVRDIGFRHAQFVDRLGDTFRWKGENVSTTEVENMVCEYDKIAEAVVYGVEIPNTNGRAGMAAITLADGEELNDADLTEMVTVFKKCLPTYAVPVFLRVQKKVETTGTFKYQKNKLKEEAFNPSKTSERLLALLPGASSYCDITTEIFDNIQAYKYRF
+What is the function of this protein ?
+2,4-dichlorophenoxyacetic acid p2cdpa , a metabolite of atrazine, is transformed to 2,4-dichlorocumar, which is the parent compound of the dioxin-like compounds group these dioxin-like compounds exert diverse effects on human and animal health, including genetic mutations and teratogenic effects the metabolism of p2cdpa is thought to be mediated
+Reddy, j , et al 2021 two crystal structures of the p2cdpa-binding domain of human ribosa reductase are reported the structures are solved at a resolution of 2 03a and 1 66a, respectively, using synchrotron data collected at the bm11 beamline at the bm30 bld of the aberration correcting undulator array ueda of
+Wang, w , et al 2021 structure-based design of novel aryl isocyanate and aryl carbamate hydrolyzing reagents
+Ma, xiangfang, et al 2019 design and synthesis of a novel rstf-1-derived pentaerythrityl tetrazole phosphoramidate and its inhibitory effects on hpao-1/11p
+GT: wrong
+
+MNHMVTTKKAKVQFNWQDPFLIEQQLSPDERMIRDAAHAYCQERLQPRVLEQFRHETTDPSIFREMGELGLLGPTIPEQYGGAGLNYVSYGLVAREIEYVDSGYRSMASVQSSLVMVPIHEFGTEEQKQKYLPKLATGEYIGCFGLTEPDHGSDPGSMITRAKKVEGGYRLSGAKMWITNSPIADVFVVWAKEVSAEGNVGDIRGFILEKGWEGLSAPAIHGKVGLRASITGEIVMDNVFVPEENAFPEIRGLKGPFTCLNSARYGIAWGAMGAAEFCWHTAHQYTMDRKQFGRPLAANQLIQKKLADMQTEIALGLQAALRFGRYTQRQLQMVD
+
+the mitochondrial enzyme coenzyme a cacab70 is essential for cytosolic c18-carboxylase activity, an essential enzyme for arachidonic acid metabolism that is required for many processes relevant to neurological health, bone health and other essential biological processes and, for example, human neurotuberculosis, bone disease and myopathy, cystic fibrosis and malaria the cacab70
+I , k , k , m
+J , m
+Es, k
+A , k
+X-ray crystallography is increasingly used to provide information about protein structure-function relationships that are relevant to disease and to therapeutic targets we report the first crystal structure of cacab70, a flavoenzyme that catalyses a step in the acyl-coa oxidation pathway that is essential for the biosynthesis of secondary and branched-chain fatty acids
+P-h, a, f, m, b, m, k, a, c, d
+H-2-oxoglutarate dehydrogenase complex from escherichia coli ec-dhoc, a mitochondrial flavoprotein complex that catalyzes the dehydrogenation of 2-oxogl
+GT: domain partly right

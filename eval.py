@@ -93,17 +93,23 @@ def main():
         protein_sequence = [sequence]
         query = [query]
         
-    
-        output_text, _ = generator.generate(query, protein_sequence)
-        
-        print(output_text)
-        
-        output_file.write(sequence + '\n')
-        output_file.write(query[0] + '\n')
-        output_file.write(output_text)
-        output_file.write('\n')
-        output_file.write('\n')
-    
+        try:
+            output_text, _ = generator.generate(query, protein_sequence)
+            
+            print(output_text)
+            
+            print("Please judge the quality of this answer, give ground truth if necessary:")
+            gt = input()
+            
+            output_file.write(sequence + '\n')
+            output_file.write(query[0] + '\n')
+            output_file.write(output_text+ '\n')
+            output_file.write("GT: " + gt + '\n')
+            output_file.write('\n')
+            output_file.write('\n')
+        except:
+            print("Error: Please input a valid protein sequence and query.")
+            continue    
 
 if __name__ == "__main__":
     main()

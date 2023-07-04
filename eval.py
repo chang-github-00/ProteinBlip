@@ -94,7 +94,7 @@ def main():
         query = [query]
         
         try:
-            output_text, _ = generator.generate(query, protein_sequence)
+            output_text = generator.generate(query, protein_sequence)
             
             print(output_text)
             

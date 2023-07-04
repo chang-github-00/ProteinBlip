@@ -8,7 +8,7 @@ model:
   low_resource: False
   prompt_path: "prompts/instruct.txt"
   prompt_template: '###Human: {} ###Assistant: '
-  ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage2_finetune/20230628142/checkpoint_24.pth
+  ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage2_finetune/20230630034/checkpoint_24.pth
   # ckpt: /mnt/default/users/v-changma1/training_output/minigpt4_stage1_pretrain_align_prompt/20230628144/checkpoint_15.pth
 
 

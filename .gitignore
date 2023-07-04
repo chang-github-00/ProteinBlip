@@ -1,3 +1,5 @@
 dataset/*
 *.pyc
 minigpt4/output/*
+minigpt4/output_test/*
+flagged/*

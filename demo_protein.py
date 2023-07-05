@@ -73,10 +73,10 @@ generator = ProteinTextGenerator(model, vis_processor, args.gpu_id)
 print("Model initialized!")
 
 
-def generate_answer(protein, query):
+def generate_answer(protein, query, temperature):
     protein_sequence = [protein]
     query_list = [query]
-    return generator.generate(query_list, protein_sequence)
+    return generator.generate(query_list, protein_sequence, temperature=temperature)
     # return protein + query
 
 
@@ -86,7 +86,7 @@ def main():
     ]
     gr.Interface(
         generate_answer,
-        inputs=["text","text"],
+        inputs=["text","text", gr.Slider(0, 1)],
         outputs=["text"],
         title="Demo of Protein-Text Foundation Model",
         description="Start by asking about a sequence in UniProt (test generalization on Trembl)!",

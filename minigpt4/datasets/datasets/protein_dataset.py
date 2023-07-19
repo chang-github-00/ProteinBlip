@@ -4,10 +4,10 @@ from minigpt4.datasets.datasets.base_dataset import BaseDataset
 
 
 class TextProteinDataset(BaseDataset):
-    def __init__(self, vis_processor, text_processor, ann_paths):
+    def __init__(self, vis_processor, text_processor, ann_paths, instruction_split=False):
         super().__init__(vis_processor=vis_processor, text_processor=text_processor)
         self.sequence = []
-        
+        self.instruction_split = instruction_split
         if isinstance(ann_paths, str):
             ann_paths = [ann_paths]
             
@@ -27,12 +27,18 @@ class TextProteinDataset(BaseDataset):
 
         output = {
             "text_input": self.text_processor(ann["caption"]),
-            "chain": self.vis_processor(ann["sequence"]),
         }
-
         for attr in ann:
-            if attr in ["id", "prompt", "instruction_split"]:
+            if "sequence" in attr:
+                new_attr = attr.replace("sequence", "chain")
+                output[new_attr] = self.vis_processor(ann[attr])
+        
+        for attr in ann:
+            if attr in ["id", "prompt", "instruction_split", "label"]:
                 output[attr] = ann[attr]
+        
+        if self.instruction_split:
+            output["instruction_split"] = "True"
         
         return output
     

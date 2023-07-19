@@ -78,19 +78,19 @@ each line is a json entry, in the following format:
 
 For single protein tasks:
 ```
-		{"prompt": "<protein><proteinHere></protein>",
-		"sequence": "MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
-		"caption":"xxxxx",
-		"id":"xxxx"}
-    
+{"prompt": "<protein><proteinHere></protein>",
+"sequence": "MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
+"caption":"xxxxx",
+"id":"xxxx"}
+  
 ```
 For multiple protein tasks:
 ```
-		{"prompt":"<protein><proteinHere_1></protein><protein><proteinHere_2></protein>…", 
-		"sequence_1":"MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
-		"sequence_2":"MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
-		…
-		"caption":"xxxxx",
-		"id":"xxxx"}
+{"prompt":"<protein><proteinHere_1></protein><protein><proteinHere_2></protein>…", 
+"sequence_1":"MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
+"sequence_2":"MEKEKKVKYFLRKSAFGLASVSAAFLVGST",
+…
+"caption":"xxxxx",
+"id":"xxxx"}
 
 ```

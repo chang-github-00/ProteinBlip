@@ -1,0 +1,5 @@
+datasets:
+  dms_instruct:
+    data_type: 1d_protein
+    build_info:
+      storage: /mnt/default/users/v-changma1/ProteinBlip/dataset/protein_instruction_tuning_v2/dms-train-instruction.txt

@@ -15,6 +15,14 @@ from minigpt4.datasets.builders.text_protein_pair_builder import (
     SwissProtBuilder,
     PDBBuilder,
     MolInstructBuilder,
+    FunctionInstructBuilder,
+    DomainInstructBuilder,
+    EnzymeCommisionInstructBuilder,
+    GeneOntologyInstructBuilder,
+    MotifInstructBuilder,
+    FitnessInstructBuilder,
+    ProteinProteinInteractionInstructBuilder,
+    SecondaryStructureInstructBuilder
 )
     
 from minigpt4.common.registry import registry
@@ -26,6 +34,14 @@ __all__ = [
     "SwissProtBuilder",
     "PDBBuilder",
     "MolInstructBuilder",
+    "FunctionInstructBuilder",
+    "DomainInstructBuilder",
+    "EnzymeCommisionInstructBuilder",
+    "GeneOntologyInstructBuilder",
+    "MotifInstructBuilder",
+    "FitnessInstructBuilder",
+    "ProteinProteinInteractionInstructBuilder",
+    "SecondaryStructureInstructBuilder"
 ]
 
 

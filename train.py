@@ -30,7 +30,8 @@ from minigpt4.models import *
 from minigpt4.processors import *
 from minigpt4.runners import *
 from minigpt4.tasks import *
-
+from torch.utils.data import DataLoader
+from torch.utils.data.dataloader import default_collate
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Training")
@@ -91,6 +92,35 @@ def main():
 
     task = tasks.setup_task(cfg)
     datasets = task.build_datasets(cfg)
+    
+    # debug code for ppi_instruct dataset
+    # ppi_datasets = datasets["ppi_instruct"]["train"]
+    
+    # d1 = ppi_datasets.__getitem__(45352)
+    # d2 = ppi_datasets.__getitem__(45353)
+    # d3 = ppi_datasets.__getitem__(45354)
+    # d4 = ppi_datasets.__getitem__(45355)
+    # batched = default_collate([d1, d2, d3, d4])
+    
+    
+    # ppi_dataloader = DataLoader(
+    #     ppi_datasets,
+    #     batch_size=4,
+    #     shuffle=False,
+    #     num_workers=4,
+    #     pin_memory=True,
+    #     drop_last=True,
+    #     collate_fn=default_collate,
+    # )
+    # previous_batch = None
+    # try:
+    #     for batch in iter(ppi_dataloader):
+    #         previous_batch = batch
+    # except Exception as e:
+    #     print(e)
+    #     print(previous_batch)
+    #     print(batch)
+    
     model = task.build_model(cfg)
 
     runner = get_runner_class(cfg)(

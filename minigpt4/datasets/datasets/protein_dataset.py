@@ -35,11 +35,12 @@ class TextProteinDataset(BaseDataset):
         
         for attr in ann:
             if attr in ["id", "prompt", "instruction_split", "label"]:
-                output[attr] = ann[attr]
+                output[attr] = str(ann[attr]) # note that sometimes json will load "0","1" as 0/1, resulting in collation error
         
         if self.instruction_split:
             output["instruction_split"] = "True"
         
+        output["index"] = index
         return output
     
     def load_annotation_sequences(self, ann_path):

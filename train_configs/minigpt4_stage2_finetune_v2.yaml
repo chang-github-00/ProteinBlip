@@ -23,7 +23,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 0.2
+    sample_ratio: 0.15
   
   ppi_instruct:
     text_processor:
@@ -36,7 +36,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 0.2
+    sample_ratio: 0.15
 
   motif_instruct:
     text_processor:
@@ -49,7 +49,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 0.2
+    sample_ratio: 0.15
 
   domain_instruct:
     text_processor:
@@ -62,7 +62,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 0.2
+    sample_ratio: 0.15
 
   ec_instruct:
     text_processor:
@@ -75,7 +75,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.15
   
   go_instruct:
     text_processor:
@@ -88,7 +88,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.15
 
   function_instruct:
     text_processor:
@@ -101,7 +101,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.05
 
   ssp_instruct:
     text_processor:
@@ -114,7 +114,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.05
 
 
 
@@ -128,15 +128,15 @@ run:
   warmup_lr: 1e-6
 
   weight_decay: 0.05
-  max_epoch: 25
-  iters_per_epoch: 1000
+  max_epoch: 20
+  iters_per_epoch: 4000
   batch_size_train: 4
   batch_size_eval: 4
   num_workers: 4
   warmup_steps: 1000
 
   seed: 42
-  output_dir: "output/minigpt4_stage2_finetune_debug"
+  output_dir: "/mnt/default/users/v-changma1/training_output/minigpt4_stage2_sft_8_tasks"
 
   amp: True
   resume_ckpt_path: null

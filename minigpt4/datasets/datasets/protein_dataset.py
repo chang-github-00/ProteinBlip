@@ -26,8 +26,10 @@ class TextProteinDataset(BaseDataset):
         ann = self.annotation[index]
 
         output = {
-            "text_input": self.text_processor(ann["caption"]),
+            "text_input": ann["caption"],
         }
+        # if "prompt" in ann:
+        #     output["prompt"] = self.text_processor(ann["prompt"])
         for attr in ann:
             if "sequence" in attr:
                 new_attr = attr.replace("sequence", "chain")

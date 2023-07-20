@@ -39,6 +39,7 @@ class MiniGPT4_Adapter(Blip2Base):
         prompt_path="",
         prompt_template="",
         max_txt_len=32,
+        max_prompt_len=200,
         end_sym='\n',
         adapter_depth=2,
         adapter_dim_head=64,
@@ -97,6 +98,7 @@ class MiniGPT4_Adapter(Blip2Base):
             self.esm_encoder.embed_dim, self.llama_model.config.hidden_size
         )
         self.max_txt_len = max_txt_len
+        self.max_prompt_len = max_prompt_len
         self.end_sym = end_sym
         self.prompt_template = prompt_template
         
@@ -187,12 +189,12 @@ class MiniGPT4_Adapter(Blip2Base):
             p_before = [sentence.split("<proteinHere>")[0] for sentence in prompt_list]  
             
             p_before_tokens = self.llama_tokenizer(
-                p_before, return_tensors="pt", add_special_tokens=False, padding="longest").to(protein_embeds.device)
+                p_before, return_tensors="pt", add_special_tokens=False, padding="longest",max_length=self.max_prompt_len, truncation=True).to(protein_embeds.device)
             
             p_before_lengths = p_before_tokens.attention_mask.sum(dim=1)  
             
             p_all_tokens = self.llama_tokenizer(  
-                prompt_list_no_ph, return_tensors="pt", add_special_tokens=False, padding="longest").to(protein_embeds.device)
+                prompt_list_no_ph, return_tensors="pt", add_special_tokens=False, padding="longest", max_length=self.max_prompt_len, truncation=True).to(protein_embeds.device)
             
             
             p_all_embeds = self.llama_model.model.embed_tokens(p_all_tokens.input_ids)
@@ -227,7 +229,7 @@ class MiniGPT4_Adapter(Blip2Base):
                 protein_ids = [int(p) for p in re.findall(pattern_num, prompt)]# 0 for <proteinHere>, 1 for <proteinHere_1>, 2 for <proteinHere_2>...
                 protein_embeds = [protein_embeds_dict[id][i] for id in protein_ids] # list of protein embeds to insert into placeholders
                 
-                prompt_tokens = self.llama_tokenizer(prompt_no_ph, return_tensors="pt", add_special_tokens=False).to(device)
+                prompt_tokens = self.llama_tokenizer(prompt_no_ph, return_tensors="pt", add_special_tokens=False, max_length=self.max_prompt_len, truncation=True).to(device)
                 
                 prompt_embeds = self.llama_model.model.embed_tokens(prompt_tokens.input_ids)
                 
@@ -371,6 +373,7 @@ class MiniGPT4_Adapter(Blip2Base):
         prompt_path = cfg.get("prompt_path", "")
         prompt_template = cfg.get("prompt_template", "")
         max_txt_len = cfg.get("max_txt_len", 32)
+        max_prompt_len = cfg.get("max_prompt_len", 200)
         end_sym = cfg.get("end_sym", '\n')
 
         # adapter_depth=2,
@@ -383,6 +386,7 @@ class MiniGPT4_Adapter(Blip2Base):
         adapter_dim_head = cfg.get("adapter_dim_head", 64)
         adapter_heads = cfg.get("adapter_heads", 8)
         adapter_num_latent_tokens = cfg.get("adapter_num_latent_tokens", 32)
+    
         
         model = cls(
             esm_model=esm_model,
@@ -395,6 +399,7 @@ class MiniGPT4_Adapter(Blip2Base):
             prompt_path=prompt_path,
             prompt_template=prompt_template,
             max_txt_len=max_txt_len,
+            max_prompt_len=max_prompt_len,
             end_sym=end_sym,
             low_resource=low_resource,  # use 8 bit and put vit in cpu
             device_8bit=device_8bit,  # the device of 8bit model should be set when loading and cannot be changed anymore.

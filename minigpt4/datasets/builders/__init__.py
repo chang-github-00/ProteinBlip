@@ -22,7 +22,8 @@ from minigpt4.datasets.builders.text_protein_pair_builder import (
     MotifInstructBuilder,
     FitnessInstructBuilder,
     ProteinProteinInteractionInstructBuilder,
-    SecondaryStructureInstructBuilder
+    SecondaryStructureInstructBuilder,
+    MolInstructDesignBuilder
 )
     
 from minigpt4.common.registry import registry
@@ -41,7 +42,8 @@ __all__ = [
     "MotifInstructBuilder",
     "FitnessInstructBuilder",
     "ProteinProteinInteractionInstructBuilder",
-    "SecondaryStructureInstructBuilder"
+    "SecondaryStructureInstructBuilder",
+    "MolInstructDesignBuilder"
 ]
 
 

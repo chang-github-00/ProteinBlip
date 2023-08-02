@@ -28,6 +28,8 @@ model:
   # Vicuna
   llama_model:  "/mnt/default/users/v-changma1/vicuna-7b-v0"
 
+  generator: "/mnt/default/users/v-changma1/mixgpt"
+  
   # generation configs
   prompt: ""
 

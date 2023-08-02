@@ -69,6 +69,38 @@ class SwissProtBuilder(BaseDatasetBuilder):
 
         return datasets
     
+@registry.register_builder("moldesign")
+class MolInstructDesignBuilder(BaseDatasetBuilder):
+    train_dataset_cls = TextProteinDataset
+
+    DATASET_CONFIG_DICT = {"default": "configs/datasets/moldesign/defaults.yaml"}
+
+    def _download_ann(self):
+        pass
+
+    def _download_vis(self):
+        pass
+
+    def build(self):
+        self.build_processors()
+
+        build_info = self.config.build_info
+
+        datasets = dict()
+        split = "train"
+
+        # create datasets
+        # [NOTE] return inner_datasets (wds.DataPipeline)
+        dataset_cls = self.train_dataset_cls
+        datasets[split] = dataset_cls(
+            vis_processor=self.vis_processors[split],
+            text_processor=self.text_processors[split],
+            ann_paths=build_info.storage,
+            instruction_split=True
+        )
+
+        return datasets
+    
 
 @registry.register_builder("molinstruct")
 class MolInstructBuilder(BaseDatasetBuilder):

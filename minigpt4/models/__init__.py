@@ -15,6 +15,7 @@ from minigpt4.models.blip2 import Blip2Base
 from minigpt4.models.mini_gpt4 import MiniGPT4
 from minigpt4.models.mini_gpt4_linear_protein import MiniGPT4_Linear
 from minigpt4.models.mini_gpt4_adapter_protein import MiniGPT4_Adapter
+from minigpt4.models.mini_gpt4_adapter_generation import MiniGPT4_Adapter_Generation
 from minigpt4.processors.base_processor import BaseProcessor
 
 
@@ -25,6 +26,7 @@ __all__ = [
     "MiniGPT4",
     "MiniGPT4_Linear",
     "MiniGPT4_Adapter",
+    "MiniGPT4_Adapter_Generation"
 ]
 
 

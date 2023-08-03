@@ -41,7 +41,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 1000
-    sample_ratio: 0.2
+    sample_ratio: 0
 
   swissprot: 
     text_processor:
@@ -54,7 +54,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 0.8
+    sample_ratio: 0
 
   moldesign:
     text_processor:
@@ -67,7 +67,7 @@ datasets:
         eval:
           name: "blip2_1d_protein_eval"
           protein_length: 10000
-    sample_ratio: 1
+    sample_ratio: 0.8
 
 run:
   task: image_text_pretrain

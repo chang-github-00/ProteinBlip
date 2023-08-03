@@ -36,7 +36,7 @@ class TextProteinDataset(BaseDataset):
                 output[new_attr] = self.vis_processor(ann[attr])
         
         for attr in ann:
-            if attr in ["id", "prompt", "instruction_split", "label"]:
+            if attr in ["id", "prompt", "instruction_split", "label", "mode"]:
                 output[attr] = str(ann[attr]) # note that sometimes json will load "0","1" as 0/1, resulting in collation error
         
         if self.instruction_split:

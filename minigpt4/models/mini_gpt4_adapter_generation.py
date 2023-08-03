@@ -294,7 +294,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             return protein_embeds, atts_protein
     
     def forward(self, samples):
-        mode = samples["mode"] if "mode" in samples else None
+        mode = samples["mode"][0] if "mode" in samples else None
         if mode == "text2protein":
             return self.forward_text_to_protein(samples)
         else:
@@ -310,21 +310,19 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         elif self.prompt_list:
             pqa_prompt = random.choice(self.prompt_list)
         
-        text = [pqa_prompt + t + self.end_sym for t in samples["text_input"]] # text to be encoded
+        text_input = samples["text_input"]
+        text = [prompt + t + self.end_sym for prompt, t in zip(pqa_prompt, text_input)] # text to be encoded
         tokenized_text = self.llama_tokenizer(text, 
                                               return_tensors="pt", 
                                               add_special_tokens=False, 
                                               padding="longest", 
-                                              max_length=self.max_text_len, 
+                                              max_length=self.max_txt_len, 
                                               truncation=True).to(device)
         
         with self.maybe_autocast():
             outputs = self.llama_model(
-                inputs_embeds=inputs_embeds,
-                attention_mask=attention_mask,
+                **tokenized_text,
                 output_hidden_states=True,
-                return_dict=True,
-                labels=targets,
             )
         
         hidden_states = outputs.hidden_states[-1] # last layer hidden states
@@ -336,14 +334,14 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
                                                      return_tensors="pt",
                                                      padding="longest",
                                                      truncation=True,
-                                                     max_length=self.max_protein_len,
+                                                     max_length=self.max_generation_len,
                                                      add_special_tokens=True).to(device)         
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.generator_tokenizer.pad_token_id, -100
         )                                   
         
         empty_targets = (
-            torch.ones([atts_query.shape[0], atts_query.shape[1]+1],
+            torch.ones([attns_query.shape[0], attns_query.shape[1]+1],
                        dtype=torch.long).to(device).fill_(-100)  # plus one for bos
         )
         targets = torch.cat([empty_targets, targets], dim=1)
@@ -356,7 +354,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         
         to_regress_embeds = self.generator_decoder.biogpt.embed_tokens(to_regress_tokens.input_ids)
         inputs_embeds = torch.cat([bos_embeds, generation_query, to_regress_embeds], dim=1)
-        attention_mask = torch.cat([atts_bos, atts_query, to_regress_tokens.attention_mask], dim=1)
+        attention_mask = torch.cat([atts_bos, attns_query, to_regress_tokens.attention_mask], dim=1)
         
         with self.maybe_autocast():
             outputs = self.generator(

@@ -69,7 +69,20 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             self.esm_encoder = self.esm_encoder.eval()
             
             logging.info("freeze esm encoder")
+        
+        
+        print('Loading Generator')
+        
+        self.generator = AutoModelForCausalLM.from_pretrained(generator)
+        self.generator_tokenizer = AutoTokenizer.from_pretrained(generator)
+        self.generator_tokenizer.pad_token = self.generator_tokenizer.eos_token
+        
+        if freeze_generator:
+            for name, param in self.generator.named_parameters():
+                param.requires_grad = False
             
+            logging.info("freeze generator")
+        
         print('Loading LLAMA')
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(llama_model, use_fast=False)
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
@@ -91,16 +104,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             param.requires_grad = False
         print('Loading LLAMA Done')
         
-        print('Loading Generator')
-        self.generator = AutoModelForCausalLM.from_pretrained(generator)
-        self.generator_tokenizer = AutoTokenizer.from_pretrained(generator)
-        self.generator_tokenizer.pad_token = self.generator_tokenizer.eos_token
         
-        if freeze_generator:
-            for name, param in self.generator.named_parameters():
-                param.requires_grad = False
-            
-            logging.info("freeze generator")
             
         self.protein_adapter = PerceiverAdapter(self.esm_encoder.embed_dim, 
                                                 depth = adapter_depth,
@@ -290,9 +294,10 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             return protein_embeds, atts_protein
     
     def forward(self, samples):
-        if "mode" == "text2protein":
+        mode = samples["mode"] if "mode" in samples else None
+        if mode == "text2protein":
             return self.forward_text_to_protein(samples)
-        else "mode" == "protein2text":
+        else:
             return self.forward_protein_to_text(samples)
     
     def forward_text_to_protein(self, samples):
@@ -332,7 +337,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
                                                      padding="longest",
                                                      truncation=True,
                                                      max_length=self.max_protein_len,
-                                                     add_special_tokens=False).to(device)         
+                                                     add_special_tokens=True).to(device)         
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.generator_tokenizer.pad_token_id, -100
         )                                   
@@ -454,7 +459,8 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         
         num_query_token = cfg.get("num_query_token")
         llama_model = cfg.get("llama_model")
-
+        generator = cfg.get("generator")
+        
         esm_model = cfg.get("esm_model", "esm2_t33_650M_UR50D")
         esm_precision = cfg.get("esm_precision", "fp32")
         freeze_esm = cfg.get("freeze_esm", True)
@@ -467,7 +473,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         
         low_resource = cfg.get("low_resource", False)
         device_8bit = cfg.get("device_8bit", 0)
-
+        
 
 
         prompt_path = cfg.get("prompt_path", "")
@@ -496,6 +502,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             freeze_esm=freeze_esm,
             num_query_token=num_query_token,
             llama_model=llama_model,
+            generator=generator,
             prompt_path=prompt_path,
             prompt_template=prompt_template,
             max_txt_len=max_txt_len,

@@ -1,5 +1,5 @@
 model:
-  arch: mini_gpt4_adapter
+  arch: mini_gpt4_adapter_generation
   model_type: pretrain_vicuna
   freeze_vit: True
   freeze_qformer: True
@@ -8,6 +8,7 @@ model:
   freeze_esm: True
   prompt_path: "prompts/alignment.txt"
   prompt_template: '###Human: {} ###Assistant: '
+  generator: '/mnt/default/users/v-changma1/mixgpt'
 
 datasets:
   # laion:

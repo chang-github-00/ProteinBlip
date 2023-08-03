@@ -3,3 +3,4 @@ dataset/*
 minigpt4/output/*
 minigpt4/output_test/*
 flagged/*
+*/__pycache__/*

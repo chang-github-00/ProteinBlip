@@ -298,8 +298,129 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         mode = samples["mode"][0] if "mode" in samples else None
         if mode == "text2protein":
             return self.forward_text_to_protein(samples)
+        elif mode == "protein+text2protein":
+            return self.forward_protein_text_to_protein(samples)
         else:
             return self.forward_protein_to_text(samples)
+    
+    
+    def forward_protein_text_to_protein(self, samples):
+        device = self.llama_model.device
+        
+        chains = [key for key in samples.keys() if key.startswith('chain')]
+        target_chains = [key for key in samples.keys() if key.startswith('target_chain')]
+        
+        if len(chains) == 1: # single protein mode
+            protein_sequences = samples["chain"]
+            protein_embeds, atts_protein = self.encode_protein(protein_sequences)
+            
+            if hasattr(samples, 'instruction_split') or 'instruction_split' in samples:  # Instruction tuning mode        # remember to add this attribute to the dataset
+                # print('Instruction tuning mode')
+                pqa_prompt = samples["prompt"]
+                protein_embeds, atts_protein = self.prompt_list_wrap(protein_embeds, atts_protein, pqa_prompt)
+            elif self.prompt_list:
+                prompt = random.choice(self.prompt_list)
+                protein_embeds, atts_protein = self.prompt_wrap(protein_embeds, atts_protein, prompt)
+        
+        else: # multiple protein mode
+            protein_sequences_dict = dict() # a dict of protein sequences, each key is a chain id, each value is a list of protein sequences
+            for attr in samples:
+                if attr.startswith('chain'):
+                    if attr == 'chain':
+                        id = 0
+                    else:
+                        id = int(attr.split('_')[1])
+                    protein_sequences_dict[id] = samples[attr]
+                    
+            protein_embeds_dict, atts_protein_dict = self.encode_multiple_protein(protein_sequences_dict)
+        
+            if hasattr(samples, 'instruction_split') or 'instruction_split' in samples:  # Instruction tuning mode        # remember to add this attribute to the dataset
+                # print('Instruction tuning mode')
+                pqa_prompt = samples["prompt"]
+                protein_embeds, atts_protein = self.prompt_list_wrap_multiple(protein_embeds_dict, atts_protein_dict, pqa_prompt)
+            elif self.prompt_list:
+                prompt = random.choice(self.prompt_list)
+                protein_embeds, atts_protein = self.prompt_wrap_multiple(protein_embeds_dict, atts_protein_dict, prompt)
+
+        # text to be encoded 
+        text = [t + self.end_sym for t in samples["text_input"]]
+        
+        # encode text
+        text_input = self.llama_tokenizer(text, 
+                                          return_tensors="pt", 
+                                          add_special_tokens=False, 
+                                          padding="longest", 
+                                          max_length=self.max_text_len, 
+                                          truncation=True).to(self.llama_model.device)
+        
+        batch_size = protein_embeds.shape[0]
+        bos = torch.ones([batch_size, 1],
+                         dtype=text_input.input_ids.dtype,
+                         device=text_input.input_ids.device) * self.llama_tokenizer.bos_token_id
+
+        bos_embeds = self.llama_model.model.embed_tokens(bos)
+        atts_bos = atts_protein[:, :1]
+
+        text_embeds = self.llama_model.model.embed_tokens(text_input.input_ids)
+
+        inputs_embeds = torch.cat([bos_embeds, protein_embeds, text_embeds], dim=1)
+        attention_mask = torch.cat([atts_bos, atts_protein, text_input.attention_mask], dim=1)
+        
+        with self.maybe_autocast():
+            outputs = self.llama_model(
+                inputs_embeds=inputs_embeds,
+                attention_mask=attention_mask,
+                output_hidden_states=True,
+            )
+        
+        hidden_states = outputs.hidden_states[-1] # last layer hidden states
+        generation_query = self.output_adapter(hidden_states) # query for generation
+        generation_query = self.llama_generator_proj(generation_query) # project to the size of vocab
+        attns_query = torch.ones(generation_query.size()[:-1], dtype=torch.long).to(device)
+        
+        to_regress_tokens = self.generator_tokenizer(target_chains,
+                                                     return_tensors="pt",
+                                                     padding="longest",
+                                                     truncation=True,
+                                                     max_length=self.max_generation_len,
+                                                     add_special_tokens=False).to(device) 
+        
+        
+        # add eos token to to_regress_tokens
+        
+        eos_token_id = self.generator_tokenizer.eos_token_id
+        to_regress_tokens.input_ids = torch.cat([to_regress_tokens.input_ids, torch.ones([to_regress_tokens.input_ids.shape[0], 1], dtype=torch.long).to(device) * eos_token_id], dim=1)
+        to_regress_tokens.attention_mask = torch.cat([to_regress_tokens.attention_mask, torch.ones([to_regress_tokens.attention_mask.shape[0], 1], dtype=torch.long).to(device)], dim=1)
+        
+        targets = to_regress_tokens.input_ids.masked_fill(
+            to_regress_tokens.input_ids == self.generator_tokenizer.pad_token_id, -100
+        )                                   
+        
+        empty_targets = (
+            torch.ones([attns_query.shape[0], attns_query.shape[1]+1],
+                       dtype=torch.long).to(device).fill_(-100)  # plus one for bos
+        )
+        targets = torch.cat([empty_targets, targets], dim=1)
+        batch_size = generation_query.shape[0]
+        bos = torch.ones([batch_size, 1],
+                         dtype=to_regress_tokens.input_ids.dtype,
+                         device=to_regress_tokens.input_ids.device) * self.generator_tokenizer.bos_token_id
+        bos_embeds = self.generator.biogpt.embed_tokens(bos)
+        atts_bos = attns_query[:, :1]
+        
+        to_regress_embeds = self.generator.biogpt.embed_tokens(to_regress_tokens.input_ids)
+        inputs_embeds = torch.cat([bos_embeds, generation_query, to_regress_embeds], dim=1)
+        attention_mask = torch.cat([atts_bos, attns_query, to_regress_tokens.attention_mask], dim=1)
+        
+        with self.maybe_autocast():
+            outputs = self.generator(
+                inputs_embeds=inputs_embeds,
+                attention_mask=attention_mask,
+                return_dict=True,
+                labels=targets,
+            )
+        loss = outputs.loss
+        return {"loss": loss}
     
     def forward_text_to_protein(self, samples):
         # only support single protein mode

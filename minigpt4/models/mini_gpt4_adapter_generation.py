@@ -14,6 +14,7 @@ from minigpt4.models.helpers import PerceiverAdapter
 from transformers import LlamaTokenizer
 from  transformers import AutoTokenizer, AutoModelForCausalLM
 import esm
+from minigpt4.models.molxpt_tokenizer import MixgptTokenizer
 
 @registry.register_model("mini_gpt4_adapter_generation")
 class MiniGPT4_Adapter_Generation(Blip2Base):
@@ -74,7 +75,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         print('Loading Generator')
         
         self.generator = AutoModelForCausalLM.from_pretrained(generator)
-        self.generator_tokenizer = AutoTokenizer.from_pretrained(generator)
+        self.generator_tokenizer = MixgptTokenizer.from_pretrained(generator)
         self.generator_tokenizer.pad_token = self.generator_tokenizer.eos_token
         
         if freeze_generator:
@@ -304,6 +305,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         # only support single protein mode
         device = self.llama_model.device
         protein_sequences = samples["chain"] # protein sequence to be generated
+        protein_sequences = ["[P]" + sequence  for sequence in protein_sequences] # add [P] to the beginning of the sequence
         
         if hasattr(samples, 'instruction_split') or 'instruction_split' in samples:  # Instruction tuning mode 
             pqa_prompt = samples["prompt"]
@@ -335,7 +337,15 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
                                                      padding="longest",
                                                      truncation=True,
                                                      max_length=self.max_generation_len,
-                                                     add_special_tokens=True).to(device)         
+                                                     add_special_tokens=False).to(device)      
+        
+        
+        # add eos token to to_regress_tokens
+        
+        eos_token_id = self.generator_tokenizer.eos_token_id
+        to_regress_tokens.input_ids = torch.cat([to_regress_tokens.input_ids, torch.ones([to_regress_tokens.input_ids.shape[0], 1], dtype=torch.long).to(device) * eos_token_id], dim=1)
+        to_regress_tokens.attention_mask = torch.cat([to_regress_tokens.attention_mask, torch.ones([to_regress_tokens.attention_mask.shape[0], 1], dtype=torch.long).to(device)], dim=1)
+        
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.generator_tokenizer.pad_token_id, -100
         )                                   
@@ -350,9 +360,9 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
                          dtype=to_regress_tokens.input_ids.dtype,
                          device=to_regress_tokens.input_ids.device) * self.generator_tokenizer.bos_token_id
         bos_embeds = self.generator.biogpt.embed_tokens(bos)
-        atts_bos = atts_query[:, :1]
+        atts_bos = attns_query[:, :1]
         
-        to_regress_embeds = self.generator_decoder.biogpt.embed_tokens(to_regress_tokens.input_ids)
+        to_regress_embeds = self.generator.biogpt.embed_tokens(to_regress_tokens.input_ids)
         inputs_embeds = torch.cat([bos_embeds, generation_query, to_regress_embeds], dim=1)
         attention_mask = torch.cat([atts_bos, attns_query, to_regress_tokens.attention_mask], dim=1)
         

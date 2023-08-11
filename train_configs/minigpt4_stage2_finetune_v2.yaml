@@ -9,7 +9,7 @@ model:
   prompt_path: "prompts/alignment.txt"
   prompt_template: '###Human: {} ###Assistant: '
   # ckpt: /mnt/default/users/v-changma1/ProteinBlip/minigpt4/output/minigpt4_stage1_pretrain/20230624105/checkpoint_5.pth
-  ckpt: /mnt/default/users/v-changma1/training_output/minigpt4_stage1_pretrain_align_prompt/20230628144/checkpoint_24.pth
+  ckpt: /default/users/v-changma1/training_output/minigpt4_stage1_pretrain_align_prompt/20230628144/checkpoint_24.pth
 
 
 datasets:

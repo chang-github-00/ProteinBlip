@@ -43,7 +43,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         prompt_path="",
         prompt_template="",
         max_txt_len=32,
-        max_generation_len=200,
+        max_generation_len=500,
         max_prompt_len=200,
         end_sym='\n',
         adapter_depth=2,
@@ -52,6 +52,8 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         adapter_num_latent_tokens=32,
         low_resource=False,  # use 8 bit and put vit in cpu
         device_8bit=0,  # the device of 8bit model should be set when loading and cannot be changed anymore.
+        need_encoder=False,
+        need_decoder=False,
     ):
         
         super().__init__()
@@ -59,30 +61,29 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         self.tokenizer = self.init_tokenizer()
         self.low_resource = low_resource
         
-        print('Loading ESM')
-        self.esm_encoder, self.esm_alphabet = self.init_protein_encoder(esm_model, esm_precision)
-        
-        print('Loading ESM Done')
-        
-        if freeze_esm:
-            for name, param in self.esm_encoder.named_parameters():
-                param.requires_grad = False
-            self.esm_encoder = self.esm_encoder.eval()
+        if need_encoder:
+            print('Loading ESM')
+            self.esm_encoder, self.esm_alphabet = self.init_protein_encoder(esm_model, esm_precision)
             
-            logging.info("freeze esm encoder")
-        
-        
-        print('Loading Generator')
-        
-        self.generator = AutoModelForCausalLM.from_pretrained(generator)
-        self.generator_tokenizer = MixgptTokenizer.from_pretrained(generator)
-        self.generator_tokenizer.pad_token = self.generator_tokenizer.eos_token
-        
-        if freeze_generator:
-            for name, param in self.generator.named_parameters():
-                param.requires_grad = False
+            print('Loading ESM Done')
             
-            logging.info("freeze generator")
+            if freeze_esm:
+                for name, param in self.esm_encoder.named_parameters():
+                    param.requires_grad = False
+                self.esm_encoder = self.esm_encoder.eval()
+                
+                logging.info("freeze esm encoder")
+            
+            
+            self.protein_adapter = PerceiverAdapter(self.esm_encoder.embed_dim, 
+                                                    depth = adapter_depth,
+                                                    dim_head = adapter_dim_head,
+                                                    heads = adapter_heads,
+                                                    num_latents = adapter_num_latent_tokens)
+            self.esm_llama_proj = nn.Linear(
+                self.esm_encoder.embed_dim, self.llama_model.config.hidden_size
+            )
+            
         
         print('Loading LLAMA')
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(llama_model, use_fast=False)
@@ -105,24 +106,27 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             param.requires_grad = False
         print('Loading LLAMA Done')
         
-        
+        if need_decoder:
+            print('Loading Generator')
             
-        self.protein_adapter = PerceiverAdapter(self.esm_encoder.embed_dim, 
+            self.generator = AutoModelForCausalLM.from_pretrained(generator)
+            self.generator_tokenizer = MixgptTokenizer.from_pretrained(generator)
+            self.generator_tokenizer.pad_token = self.generator_tokenizer.eos_token
+            
+            if freeze_generator:
+                for name, param in self.generator.named_parameters():
+                    param.requires_grad = False
+                
+                logging.info("freeze generator")
+                
+            self.output_adapter = PerceiverAdapter(self.llama_model.config.hidden_size,
                                                 depth = adapter_depth,
                                                 dim_head = adapter_dim_head,
                                                 heads = adapter_heads,
                                                 num_latents = adapter_num_latent_tokens)
-        self.esm_llama_proj = nn.Linear(
-            self.esm_encoder.embed_dim, self.llama_model.config.hidden_size
-        )
-        self.output_adapter = PerceiverAdapter(self.llama_model.config.hidden_size,
-                                               depth = adapter_depth,
-                                               dim_head = adapter_dim_head,
-                                               heads = adapter_heads,
-                                               num_latents = adapter_num_latent_tokens)
-        self.llama_generator_proj = nn.Linear(
-            self.llama_model.config.hidden_size, self.generator.config.hidden_size
-        )
+            self.llama_generator_proj = nn.Linear(
+                self.llama_model.config.hidden_size, self.generator.config.hidden_size
+            )
         
         self.max_txt_len = max_txt_len
         self.max_generation_len = max_generation_len
@@ -621,6 +625,9 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         adapter_dim_head = cfg.get("adapter_dim_head", 64)
         adapter_heads = cfg.get("adapter_heads", 8)
         adapter_num_latent_tokens = cfg.get("adapter_num_latent_tokens", 32)
+        
+        need_encoder = cfg.get("need_encoder", False)
+        need_decoder = cfg.get("need_decoder", False)
     
         
         model = cls(
@@ -643,6 +650,8 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             adapter_dim_head=adapter_dim_head,
             adapter_heads=adapter_heads,
             adapter_num_latent_tokens=adapter_num_latent_tokens,
+            need_encoder=need_encoder,
+            need_decoder=need_decoder
         )
 
         ckpt_path = cfg.get("ckpt", "")  # load weights of MiniGPT-4

@@ -26,9 +26,9 @@ model:
   adapter_num_latent_tokens: 32
 
   # Vicuna
-  llama_model:  "/mnt/default/users/v-changma1/vicuna-7b-v0"
+  llama_model:  "/default/users/v-changma1/vicuna-7b-v0"
 
-  generator: "/mnt/default/users/v-changma1/mixgpt"
+  generator: "/default/users/v-changma1/mixgpt"
   
   # generation configs
   prompt: ""

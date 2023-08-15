@@ -661,3 +661,25 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
             msg = model.load_state_dict(ckpt['model'], strict=False)
 
         return model
+
+    
+    def encode_text(self, text):
+        device = self.llama_model.device
+        tokenized_text = self.llama_tokenizer(text, 
+                                          return_tensors="pt", 
+                                          add_special_tokens=False, 
+                                          padding="longest", 
+                                          max_length=self.max_txt_len, 
+                                          truncation=True).to(device)
+        with self.maybe_autocast():
+            outputs = self.llama_model(
+                **tokenized_text,
+                output_hidden_states=True,
+            )
+        
+            hidden_states = outputs.hidden_states[-1] # last layer hidden states
+            generation_query = self.output_adapter(hidden_states) # query for generation
+            generation_query = self.llama_generator_proj(generation_query) # project to the size of vocab
+            attns_query = torch.ones(generation_query.size()[:-1], dtype=torch.long).to(device)
+            
+        return generation_query, attns_query

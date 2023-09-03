@@ -4,3 +4,5 @@ minigpt4/output/*
 minigpt4/output_test/*
 flagged/*
 */__pycache__/*
+minigpt4/output_dms/*
+*.pth

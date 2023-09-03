@@ -23,7 +23,8 @@ from minigpt4.datasets.builders.text_protein_pair_builder import (
     FitnessInstructBuilder,
     ProteinProteinInteractionInstructBuilder,
     SecondaryStructureInstructBuilder,
-    MolInstructDesignBuilder
+    MolInstructDesignBuilder,
+    DMSRefineBuilder
 )
     
 from minigpt4.common.registry import registry
@@ -43,7 +44,8 @@ __all__ = [
     "FitnessInstructBuilder",
     "ProteinProteinInteractionInstructBuilder",
     "SecondaryStructureInstructBuilder",
-    "MolInstructDesignBuilder"
+    "MolInstructDesignBuilder",
+    "DMSRefineBuilder"
 ]
 
 

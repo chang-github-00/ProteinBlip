@@ -25,9 +25,10 @@ class TextProteinDataset(BaseDataset):
 
         ann = self.annotation[index]
 
-        output = {
-            "text_input": ann["caption"],
-        }
+        output = dict()
+        
+        if "caption" in ann:
+            output["text_input"] = ann["caption"]
         # if "prompt" in ann:
         #     output["prompt"] = self.text_processor(ann["prompt"])
         for attr in ann:
@@ -50,8 +51,11 @@ class TextProteinDataset(BaseDataset):
         with open(ann_path, "r") as f:
             for line in f:
                 line = line.strip()
-                item = json.loads(line)
-                annotations.append(item)
+                try:
+                    item = json.loads(line)
+                    annotations.append(item)
+                except:
+                    pass
         return annotations
 
 

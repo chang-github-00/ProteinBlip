@@ -61,6 +61,25 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         self.tokenizer = self.init_tokenizer()
         self.low_resource = low_resource
         
+        print('start loading LLAMA')
+        if self.low_resource:
+            self.llama_model = LlamaForCausalLM.from_pretrained(
+                llama_model,
+                torch_dtype=torch.float16,
+                load_in_8bit=True,
+                device_map={'': device_8bit}
+            )
+        else:
+            self.llama_model = LlamaForCausalLM.from_pretrained(
+                llama_model,
+                torch_dtype=torch.float16,
+            )
+
+        for name, param in self.llama_model.named_parameters():
+            param.requires_grad = False
+        print('Loading LLAMA Done')
+        
+        
         if need_encoder:
             print('Loading ESM')
             self.esm_encoder, self.esm_alphabet = self.init_protein_encoder(esm_model, esm_precision)
@@ -89,23 +108,6 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         self.llama_tokenizer = LlamaTokenizer.from_pretrained(llama_model, use_fast=False)
         self.llama_tokenizer.pad_token = self.llama_tokenizer.eos_token
 
-        if self.low_resource:
-            self.llama_model = LlamaForCausalLM.from_pretrained(
-                llama_model,
-                torch_dtype=torch.float16,
-                load_in_8bit=True,
-                device_map={'': device_8bit}
-            )
-        else:
-            self.llama_model = LlamaForCausalLM.from_pretrained(
-                llama_model,
-                torch_dtype=torch.float16,
-            )
-
-        for name, param in self.llama_model.named_parameters():
-            param.requires_grad = False
-        print('Loading LLAMA Done')
-        
         if need_decoder:
             print('Loading Generator')
             
@@ -316,6 +318,7 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
         
         if len(chains) == 1: # single protein mode
             protein_sequences = samples["chain"]
+            target_chains = samples["target_chain"]
             protein_embeds, atts_protein = self.encode_protein(protein_sequences)
             
             if hasattr(samples, 'instruction_split') or 'instruction_split' in samples:  # Instruction tuning mode        # remember to add this attribute to the dataset
@@ -347,28 +350,28 @@ class MiniGPT4_Adapter_Generation(Blip2Base):
                 protein_embeds, atts_protein = self.prompt_wrap_multiple(protein_embeds_dict, atts_protein_dict, prompt)
 
         # text to be encoded 
-        text = [t + self.end_sym for t in samples["text_input"]]
+        # text = [t + self.end_sym for t in samples["text_input"]]
         
-        # encode text
-        text_input = self.llama_tokenizer(text, 
-                                          return_tensors="pt", 
-                                          add_special_tokens=False, 
-                                          padding="longest", 
-                                          max_length=self.max_text_len, 
-                                          truncation=True).to(self.llama_model.device)
+        # # encode text
+        # text_input = self.llama_tokenizer(text, 
+        #                                   return_tensors="pt", 
+        #                                   add_special_tokens=False, 
+        #                                   padding="longest", 
+        #                                   max_length=self.max_text_len, 
+        #                                   truncation=True).to(self.llama_model.device)
         
         batch_size = protein_embeds.shape[0]
         bos = torch.ones([batch_size, 1],
-                         dtype=text_input.input_ids.dtype,
-                         device=text_input.input_ids.device) * self.llama_tokenizer.bos_token_id
+                         dtype=torch.int64,
+                         device=device) * self.llama_tokenizer.bos_token_id
 
         bos_embeds = self.llama_model.model.embed_tokens(bos)
         atts_bos = atts_protein[:, :1]
 
-        text_embeds = self.llama_model.model.embed_tokens(text_input.input_ids)
+        # text_embeds = self.llama_model.model.embed_tokens(text_input.input_ids)
 
-        inputs_embeds = torch.cat([bos_embeds, protein_embeds, text_embeds], dim=1)
-        attention_mask = torch.cat([atts_bos, atts_protein, text_input.attention_mask], dim=1)
+        inputs_embeds = torch.cat([bos_embeds, protein_embeds], dim=1)
+        attention_mask = torch.cat([atts_bos, atts_protein], dim=1)
         
         with self.maybe_autocast():
             outputs = self.llama_model(

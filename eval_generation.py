@@ -1,7 +1,7 @@
 import argparse
 import os
 import random
-
+from tqdm import tqdm
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
@@ -84,28 +84,49 @@ def main():
     
     
     
-    while(1):
-        print("Please input a query:")
-        query = input()
+    # while(1):
+    #     print("Please input a query:")
+    #     query = input()
         
-        query = [query]
+    #     query = [query]
         
-        if True:
-            output_text = generator.generate(query)
+    #     if True:
+    #         output_text = generator.generate(query)
             
-            print(output_text)
+    #         print(output_text)
             
-            print("Please judge the quality of this answer, give ground truth if necessary:")
-            gt = input()
+    #         print("Please judge the quality of this answer, give ground truth if necessary:")
+    #         gt = input()
             
-            output_file.write(query[0] + '\n')
-            output_file.write(output_text+ '\n')
-            output_file.write("GT: " + gt + '\n')
-            output_file.write('\n')
-            output_file.write('\n')
-        else:
-            print("Error: Please input a valid protein sequence and query.")
-            continue    
+    #         output_file.write(query[0] + '\n')
+    #         output_file.write(output_text+ '\n')
+    #         output_file.write("GT: " + gt + '\n')
+    #         output_file.write('\n')
+    #         output_file.write('\n')
+    #     else:
+    #         print("Error: Please input a valid protein sequence and query.")
+    #         continue    
 
+    all_queries = {
+        "A0A1J4YT16_9PROT":"Generate a protein sequence that satisfies this requirement: rubisco with enhanced enzyme activity, leading to faster carboxylation rates and potentially improving the conversion of CO2 into biomass. ",
+        "B1LPA6_ECOSM":"Generate a horismate mutase protein that enhance enzyme activity:",
+        "AAV":"We aim to find diverse and novel AAV capsids capable of immune evasion and packaging their own genomes. Adeno-associated virus (AAV) capsids have shown clinical promise as delivery vectors for gene therapy. Generate a protein sequence that satisfies this requirement:",
+        "Null": ""
+    }
+    
+    for key in tqdm(all_queries):
+        query = [all_queries[key]]
+        output_file = open("minigpt4/output_dms/test_" + key + ".txt", 'a')
+        for i in tqdm(range(20)):
+            output_text = generator.generate(query)
+            output_file.write(output_text + '\n')
+            output_file.flush()
+        
+        output_file.close() 
+        
+    
+        
+        
+    
 if __name__ == "__main__":
     main()
